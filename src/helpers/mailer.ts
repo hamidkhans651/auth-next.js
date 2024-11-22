@@ -11,30 +11,48 @@ export const sendMail = async ({ email, emailType, userId }: any) => {
         // todo configure mail for usage
         if (emailType === "VERIFU") {
             await User.findByIdAndUpdate(userId,
-                { verifyToken: hashedToken }
+                { verifyToken: hashedToken, verifTokenExpiry: Date.now() + 3600000 }
+
+
             )
+        } else if (emailType === "RESET") {
+            await User.findByIdAndUpdate(userId,
+                {
+                    forgotPasswordToken: hashedToken,
+                    forgotPasswordTokenExpiry: Date.now() + 3600000
+                })
+
+
         }
 
+        // Looking to send emails in production? Check out our Email API/SMTP product!
         const Transporter = nodemailer.createTransport({
-            host: "smtp.example.com",
-            port: 587,
-            secure: false, // upgrade later with STARTTLS
+            host: "sandbox.smtp.mailtrap.io",
+            port: 2525,
             auth: {
-                user: "username",
-                pass: "password",
-            },
-
+                user: "da6a1cab28999b",
+                pass: "15e0940be982aa"
+            }
         });
-
 
         const mailOption = {
             from: 'Nodemailer <example@nodemailer.com>',
             to: email,
             subject: emailType === 'VERIFY' ? "VERIFY your email" : "RESET your password",
-            text: 'jellow',
-            html: '<p>For clients that do not support AMP4EMAIL or amp content is not valid',
+            text: 'hellow',
+
+            // verifyemail
+            html: `<p>click <a href="${process.env.DOMAIN}
+            verifyemail?token=${hashedToken}"> here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"} or copy and paste the link below in your browser <br/> ${process.env.DOMAIN}/verifyemail?token=${hashedToken}</p> `,
 
         }
+
+        // ForgotPassword
+
+
+
+
+        
         const mailResponse = await Transporter.sendMail
             (mailOption);
         return mailResponse
