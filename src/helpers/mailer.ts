@@ -1,14 +1,19 @@
+import User from "@/models/usermodels";
 import { error } from "console"
 import { verify } from "crypto";
+import bycriptjs from 'bcryptjs'
 import nodemailer from "nodemailer"
 
 
 export const sendMail = async ({ email, emailType, userId }: any) => {
     try {
-
+        const hashedToken = await bycriptjs.hash(userId.tostring(), 10)
         // todo configure mail for usage
-
-
+        if (emailType === "VERIFU") {
+            await User.findByIdAndUpdate(userId,
+                { verifyToken: hashedToken }
+            )
+        }
 
         const Transporter = nodemailer.createTransport({
             host: "smtp.example.com",
