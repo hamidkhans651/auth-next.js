@@ -44,6 +44,18 @@ export const adminTable = pgTable('admin_table', {
   address: text('email').notNull().unique(),
 });
 
+export const sellerTable = pgTable('seller_table', {
+  id: serial('id').primaryKey(),
+  propertyname: text('name').notNull(),
+  categories: integer('age').notNull(),
+  address: text('email').notNull().unique(),
+});
+
+
+export type Insertseller = typeof sellerTable.$inferInsert;
+export type Selectseller = typeof sellerTable.$inferSelect;
+
+
 export type Insertadmin = typeof adminTable.$inferInsert;
 export type Selectadmin = typeof adminTable.$inferSelect;
 

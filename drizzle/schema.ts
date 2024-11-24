@@ -48,3 +48,14 @@ export const propertyTable = pgTable("property_table", {
 		propertyTableEmailUnique: unique("property_table_email_unique").on(table.email),
 	}
 });
+
+export const adminTable = pgTable("admin_table", {
+	id: serial().primaryKey().notNull(),
+	name: text().notNull(),
+	age: integer().notNull(),
+	email: text().notNull(),
+}, (table) => {
+	return {
+		adminTableEmailUnique: unique("admin_table_email_unique").on(table.email),
+	}
+});
